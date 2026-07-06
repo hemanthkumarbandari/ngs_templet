@@ -47,56 +47,7 @@ function GlobalAnimationStyles() {
         .about-left { position: static; }
       }
 
-      /* ── Marquee flip item ── */
-      .flip-item {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        height: 36px;
-        perspective: 600px;
-        cursor: default;
-        flex-shrink: 0;
-      }
-      .flip-face {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      .flip-front {
-        transform-origin: bottom;
-        transform: rotateX(0deg);
-      }
-      .flip-back {
-        transform-origin: top;
-        transform: rotateX(90deg);
-      }
-      @media (hover: hover) and (pointer: fine) {
-        .flip-item:hover .flip-front {
-          transform: rotateX(-90deg);
-        }
-        .flip-item:hover .flip-back {
-          transform: rotateX(0deg);
-        }
-        .flip-item:hover .flip-glow {
-          opacity: 1;
-        }
-      }
-      .flip-glow {
-        position: absolute;
-        inset: -20px -40px;
-        border-radius: 50%;
-        background: radial-gradient(ellipse at center, rgba(156,163,175,0.18) 0%, transparent 70%);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.35s ease;
-        z-index: -1;
-      }
+
 
       /* ── Prefooter Circle Floating Animations ── */
       @keyframes floatSlow1 {
@@ -188,8 +139,7 @@ function GlobalAnimationStyles() {
 
       /* ── Logo marquee heading ── */
       @media (max-width: 767px) {
-        .marquee-heading-h2 { font-size: 24px !important; }
-        .marquee-section { padding-top: 40px !important; padding-bottom: 28px !important; }
+        .marquee-section { padding-top: 20px !important; padding-bottom: 20px !important; }
       }
 
       /* ── Values section ── */
@@ -387,7 +337,7 @@ function Navbar() {
         position: 'sticky',
         top: 0,
         zIndex: 50,
-        backgroundColor: theme.bg,
+        backgroundColor: 'transparent',
         padding: '14px 16px 8px 16px',
         transition: 'all 0.3s ease',
       }}
@@ -396,7 +346,7 @@ function Navbar() {
         style={{
           maxWidth: 1440,
           margin: '0 auto',
-          backgroundColor: scrolled ? 'rgba(255,255,255,0.9)' : theme.bgAlt,
+          backgroundColor: scrolled ? 'rgba(255,255,255,0.9)' : theme.surface,
           backdropFilter: scrolled ? 'blur(12px)' : 'none',
           border: `1px solid ${theme.border}`,
           borderRadius: 16,
@@ -470,73 +420,60 @@ function HeroSection() {
   });
  
   return (
-    <section
-      className="hero-grid"
-      style={{ 
-        maxWidth: 1440, 
-        margin: '0 auto', 
-        padding: '40px 24px', 
-        display: 'grid', 
-        gridTemplateColumns: '1fr 1.15fr', 
-        gap: 64, 
-        alignItems: 'center',
-        minHeight: 'calc(100vh - 76px)',
-        boxSizing: 'border-box',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Background blurred glows — fine on mobile, no overflow issue */}
-      <div style={{ position: 'absolute', top: '-120px', right: '-120px', width: 500, height: 500, borderRadius: '50%', background: `radial-gradient(circle, rgba(244,121,28,0.28) 0%, rgba(244,121,28,0) 70%)`, filter: 'blur(100px)', zIndex: 0, pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: '-100px', left: '-100px', width: 400, height: 400, borderRadius: '50%', background: `radial-gradient(circle, rgba(251,196,139,0.32) 0%, rgba(251,196,139,0) 70%)`, filter: 'blur(90px)', zIndex: 0, pointerEvents: 'none' }} />
+    <div style={{ backgroundColor: theme.surface }}>
+      <section
+        className="hero-grid"
+        style={{ 
+          maxWidth: 1440, 
+          margin: '0 auto', 
+          padding: '40px 24px', 
+          display: 'grid', 
+          gridTemplateColumns: '1fr 1.15fr', 
+          gap: 64, 
+          alignItems: 'center',
+          minHeight: 'calc(100vh - 76px)',
+          boxSizing: 'border-box',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
 
-      {/* Corner circles — hidden on tablet/mobile via .hero-corner-circles */}
-      <div className="hero-corner-circles" style={{ position: 'absolute', top: 0, right: 0, zIndex: 0, pointerEvents: 'none' }}>
-        <div style={{ position: 'absolute', top: -20, right: -20, width: 100, height: 100, borderRadius: '50%', background: 'linear-gradient(135deg, #4285F4, #5B9CF6)', boxShadow: '0 8px 28px rgba(66,133,244,0.22)', opacity: 0.92 }} />
-        <div style={{ position: 'absolute', top: 62, right: 62, width: 58, height: 58, borderRadius: '50%', background: 'linear-gradient(135deg, #34A853, #57C47A)', boxShadow: '0 6px 18px rgba(52,168,83,0.20)', opacity: 0.90 }} />
-        <div style={{ position: 'absolute', top: 28, right: 105, width: 34, height: 34, borderRadius: '50%', background: 'linear-gradient(135deg, #F9BC05, #FFD54F)', boxShadow: '0 4px 12px rgba(249,188,5,0.22)', opacity: 0.92 }} />
-      </div>
-      <div className="hero-corner-circles" style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 0, pointerEvents: 'none' }}>
-        <div style={{ position: 'absolute', bottom: -20, left: -20, width: 100, height: 100, borderRadius: '50%', background: 'linear-gradient(135deg, #F9BC05, #FFD54F)', boxShadow: '0 8px 28px rgba(249,188,5,0.22)', opacity: 0.92 }} />
-        <div style={{ position: 'absolute', bottom: 62, left: 62, width: 58, height: 58, borderRadius: '50%', background: 'linear-gradient(135deg, #4285F4, #5B9CF6)', boxShadow: '0 6px 18px rgba(66,133,244,0.20)', opacity: 0.90 }} />
-        <div style={{ position: 'absolute', bottom: 28, left: 105, width: 34, height: 34, borderRadius: '50%', background: 'linear-gradient(135deg, #34A853, #57C47A)', boxShadow: '0 4px 12px rgba(52,168,83,0.20)', opacity: 0.92 }} />
-      </div>
-
-      <div style={{ position: 'relative', zIndex: 1 }}>
-        <h1 className="hero-h1" style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.08, color: theme.text, marginBottom: 24, letterSpacing: '-2px', ...fadeStep(0) }}>
-          Why We Build<br />Different
-        </h1>
-        <p style={{ fontSize: 17, color: theme.textMuted, lineHeight: 1.7, marginBottom: 36, maxWidth: 480, fontWeight: 400, ...fadeStep(120) }}>
-          We believe that every business deserves a website that works as hard as they do. That's why we've made it our mission to make advanced AI technology accessible, practical, and profitable for our clients.
-        </p>
-        <div style={fadeStep(240)}>
-          <button
-            style={{ padding: '14px 28px', backgroundColor: theme.primary, color: '#fff', borderRadius: 12, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700, letterSpacing: '1px', transition: 'all 0.2s', boxShadow: '0 4px 20px rgba(244,121,28,0.28)', minHeight: 44 }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = theme.primaryDark; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = theme.primary; e.currentTarget.style.transform = 'translateY(0)'; }}
-          >
-            GET STARTED
-          </button>
-        </div>
-      </div>
-
-      <div style={{ position: 'relative', zIndex: 1, ...fadeStep(180) }}>
-        <div style={{ borderRadius: 36, overflow: 'hidden', height: 320, marginBottom: 20, boxShadow: '0 8px 40px rgba(42,41,38,0.1)' }}>
-          <img src="/hero_team.png" alt="Team collaborating" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        </div>
-        <div className="hero-stat-cards" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-          <div style={{ backgroundColor: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 28, padding: '28px 28px', display: 'flex', alignItems: 'center', ...fadeStep(300) }}>
-            <p style={{ color: theme.text, fontWeight: 500, fontSize: 18, lineHeight: 1.45 }}>
-              "The AI platform revealed insights we never knew existed in our data."
-            </p>
-          </div>
-          <div style={{ backgroundColor: theme.peach, borderRadius: 28, padding: '28px 28px', display: 'flex', flexDirection: 'column', justifyContent: 'center', ...fadeStep(380) }}>
-            <span style={{ fontSize: 60, fontWeight: 700, color: theme.primaryDark, lineHeight: 1, letterSpacing: '-2px' }}>36%</span>
-            <p style={{ color: theme.text, fontWeight: 500, fontSize: 18, marginTop: 8 }}>Connection rate</p>
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <h1 className="hero-h1" style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.08, color: theme.text, marginBottom: 24, letterSpacing: '-2px', ...fadeStep(0) }}>
+            Why We Build<br />Different
+          </h1>
+          <p style={{ fontSize: 17, color: theme.textMuted, lineHeight: 1.7, marginBottom: 36, maxWidth: 480, fontWeight: 400, ...fadeStep(120) }}>
+            We believe that every business deserves a website that works as hard as they do. That's why we've made it our mission to make advanced AI technology accessible, practical, and profitable for our clients.
+          </p>
+          <div style={fadeStep(240)}>
+            <button
+              style={{ padding: '14px 28px', backgroundColor: theme.primary, color: '#fff', borderRadius: 12, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700, letterSpacing: '1px', transition: 'all 0.2s', boxShadow: '0 4px 20px rgba(244,121,28,0.28)', minHeight: 44 }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = theme.primaryDark; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = theme.primary; e.currentTarget.style.transform = 'translateY(0)'; }}
+            >
+              GET STARTED
+            </button>
           </div>
         </div>
-      </div>
-    </section>
+
+        <div style={{ position: 'relative', zIndex: 1, ...fadeStep(180) }}>
+          <div style={{ borderRadius: 36, overflow: 'hidden', height: 320, marginBottom: 20, boxShadow: '0 8px 40px rgba(42,41,38,0.1)' }}>
+            <img src="/hero_team.png" alt="Team collaborating" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          </div>
+          <div className="hero-stat-cards" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <div style={{ backgroundColor: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 28, padding: '28px 28px', display: 'flex', alignItems: 'center', ...fadeStep(300) }}>
+              <p style={{ color: theme.text, fontWeight: 500, fontSize: 18, lineHeight: 1.45 }}>
+                "The AI platform revealed insights we never knew existed in our data."
+              </p>
+            </div>
+            <div style={{ backgroundColor: theme.peach, borderRadius: 28, padding: '28px 28px', display: 'flex', flexDirection: 'column', justifyContent: 'center', ...fadeStep(380) }}>
+              <span style={{ fontSize: 60, fontWeight: 700, color: theme.primaryDark, lineHeight: 1, letterSpacing: '-2px' }}>36%</span>
+              <p style={{ color: theme.text, fontWeight: 500, fontSize: 18, marginTop: 8 }}>Connection rate</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
  
@@ -553,37 +490,26 @@ const logos = [
 ];
 
 function FlipItem({ name, icon }) {
-  // Measure natural width so the container is fixed — avoids reflow on flip
-  const measureRef = useRef(null);
-  const [w, setW] = useState('auto');
-  useEffect(() => {
-    if (measureRef.current) setW(measureRef.current.offsetWidth);
-  }, []);
-
-  const muteGray = '#9CA3AF';
-  const darkChar = '#1a1a1a';
-
+  const [hovered, setHovered] = useState(false);
   return (
     <div
-      className="flip-item"
-      style={{ width: w, minWidth: 80 }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 12,
+        fontSize: 36,
+        fontWeight: 600,
+        color: hovered ? theme.text : '#9CA3AF',
+        cursor: 'pointer',
+        transform: hovered ? 'rotateX(-360deg)' : 'rotateX(0deg)',
+        transition: 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.3s ease',
+        transformStyle: 'preserve-3d',
+      }}
     >
-      <div className="flip-glow" />
-      {/* measure ghost */}
-      <div ref={measureRef} style={{ visibility: 'hidden', position: 'absolute', display: 'flex', alignItems: 'center', gap: 10, fontSize: 22, fontWeight: 500, letterSpacing: '-0.5px', whiteSpace: 'nowrap', pointerEvents: 'none' }}>
-        <span style={{ fontSize: 20 }}>{icon}</span>
-        {name}
-      </div>
-      {/* FRONT — muted gray */}
-      <div className="flip-face flip-front" style={{ color: muteGray, fontSize: 22, fontWeight: 500, letterSpacing: '-0.5px', whiteSpace: 'nowrap' }}>
-        <span style={{ fontSize: 20 }}>{icon}</span>
-        {name}
-      </div>
-      {/* BACK — dark charcoal */}
-      <div className="flip-face flip-back" style={{ color: darkChar, fontSize: 22, fontWeight: 600, letterSpacing: '-0.5px', whiteSpace: 'nowrap' }}>
-        <span style={{ fontSize: 20 }}>{icon}</span>
-        {name}
-      </div>
+      <span style={{ fontSize: 32 }}>{icon}</span>
+      {name}
     </div>
   );
 }
@@ -667,15 +593,10 @@ function LogoMarquee() {
     <section
       ref={sectionRef}
       className="marquee-section"
-      style={{ backgroundColor: theme.surface, borderTop: `1px solid ${theme.border}`, borderBottom: `1px solid ${theme.border}`, paddingTop: 56, paddingBottom: 40, overflow: 'hidden', cursor: 'none' }}
+      style={{ backgroundColor: theme.surface, padding: '36px 0', overflow: 'hidden', cursor: 'none' }}
     >
-      {/* Heading */}
-      <div style={{ textAlign: 'center', marginBottom: 36, paddingBottom: 28, borderBottom: `1px solid ${theme.border}`, padding: '0 24px 28px' }}>
-        <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: '2.5px', color: theme.primary, textTransform: 'uppercase', marginBottom: 10 }}>Our Partners</p>
-        <h2 className="marquee-heading-h2" style={{ fontSize: 32, fontWeight: 700, color: theme.text, letterSpacing: '-0.8px', lineHeight: 1.2 }}>Trusted by Leading Companies</h2>
-      </div>
       {/* Marquee strip */}
-      <div style={{ overflow: 'hidden', position: 'relative', paddingTop: 28 }}>
+      <div style={{ overflow: 'hidden', position: 'relative' }}>
         <div ref={trackRef} style={{ display: 'flex', gap: 72, whiteSpace: 'nowrap', willChange: 'transform', alignItems: 'center' }}>
           {doubled.map((logo, idx) => (<FlipItem key={idx} name={logo.name} icon={logo.icon} />))}
         </div>
@@ -798,7 +719,7 @@ function AboutSection() {
 // ─── Mission Section ──────────────────────────────────────────────────────────
 function MissionSection() {
   return (
-    <section className="mission-section" style={{ backgroundColor: theme.bg, padding: '100px 24px 80px' }}>
+    <section className="mission-section" style={{ backgroundColor: theme.surface, padding: '100px 24px 80px' }}>
       <div style={{ maxWidth: 1440, margin: '0 auto' }}>
         <Reveal style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
           <div style={{ width: 12, height: 12, backgroundColor: theme.primary, borderRadius: 2 }} />
@@ -839,7 +760,7 @@ const values = [
     icon: Award,
     title: 'Human-Centered Innovation',
     desc: 'Technology should serve humanity. We design our AI solutions with real human needs at the center, ensuring our innovations enhance human capabilities rather than replace human judgment.',
-    bg: theme.bgAlt,
+    bg: theme.surface,
   },
   {
     icon: Database,
@@ -851,7 +772,7 @@ const values = [
  
 function ValuesSection() {
   return (
-    <section className="values-section" style={{ backgroundColor: theme.bg, padding: '80px 24px 100px' }}>
+    <section className="values-section" style={{ backgroundColor: theme.surface, padding: '80px 24px 100px' }}>
       <div style={{ maxWidth: 1440, margin: '0 auto' }}>
         <div className="values-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24 }}>
           {values.map(({ icon: Icon, title, desc, bg }, idx) => (
