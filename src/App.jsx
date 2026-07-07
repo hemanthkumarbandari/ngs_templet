@@ -4,16 +4,16 @@ import logoImg from '../logo.png';
  
 // ─── Theme tokens ───────────────────────────────────────────────────────────
 const theme = {
-  bg: '#FBF7F0',          // base warm off-white
-  bgAlt: '#F3EBDD',        // soft cream (section bg)
-  primary: '#F4791C',      // primary orange (anchor — fixed)
-  primaryDark: '#D6650F',  // primary hover/dark
-  peach: '#FBC48B',        // accent peach
-  tangerine: '#F79A4A',    // accent tangerine dot
-  text: '#2A2926',         // charcoal — text primary
-  textMuted: '#6B655C',    // muted text
-  border: '#E4DACB',       // border/divider
-  surface: '#FFFFFF',      // card surface
+  bg: '#F8FAFC',           // cool crisp slate-50 background
+  bgAlt: '#F1F5F9',        // light cool slate-100
+  primary: '#2563EB',      // professional blue-600
+  primaryDark: '#1D4ED8',  // dark blue-700 hover
+  peach: '#93C5FD',        // accent light blue
+  tangerine: '#3B82F6',    // accent bright blue
+  text: '#0F172A',         // deep cool navy slate-900
+  textMuted: '#475569',    // cool muted slate-600
+  border: '#E2E8F0',       // cool slate-200 divider
+  surface: '#FFFFFF',      // pure white surface
 };
  
 // ─── Global keyframes (marquee, fade/slide reveal) ────────────────────────────
@@ -393,13 +393,6 @@ function Navbar() {
           >
             SIGN IN
           </button>
-          <button
-            style={{ padding: '9px 20px', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700, letterSpacing: '0.6px', color: theme.text, transition: 'opacity 0.2s' }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.6')}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-          >
-            SIGN UP
-          </button>
         </div>
       </div>
     </nav>
@@ -491,6 +484,14 @@ const logos = [
 
 function FlipItem({ name, icon }) {
   const [hovered, setHovered] = useState(false);
+  
+  const content = (
+    <>
+      <span style={{ fontSize: 32 }}>{icon}</span>
+      <span>{name}</span>
+    </>
+  );
+
   return (
     <div
       onMouseEnter={() => setHovered(true)}
@@ -498,18 +499,40 @@ function FlipItem({ name, icon }) {
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: 12,
         fontSize: 36,
         fontWeight: 600,
         color: hovered ? theme.text : '#9CA3AF',
         cursor: 'pointer',
-        transform: hovered ? 'rotateX(-360deg)' : 'rotateX(0deg)',
-        transition: 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.3s ease',
-        transformStyle: 'preserve-3d',
+        position: 'relative',
+        overflow: 'hidden',
+        height: 56, // Fixed height to clip sliding animation cleanly
+        transition: 'color 0.4s ease',
+        whiteSpace: 'nowrap',
+        flexShrink: 0
       }}
     >
-      <span style={{ fontSize: 32 }}>{icon}</span>
-      {name}
+      <div style={{
+        transform: hovered ? 'translateY(-100%)' : 'translateY(0)',
+        transition: 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12
+      }}>
+        {content}
+      </div>
+      <div style={{
+        position: 'absolute',
+        top: 0, left: 0, right: 0, bottom: 0,
+        transform: hovered ? 'translateY(0)' : 'translateY(100%)', // Start below and slide to 0
+        transition: 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12
+      }}>
+        {content}
+      </div>
     </div>
   );
 }
@@ -645,10 +668,10 @@ function StatItem({ value, label, suffix = '' }) {
  
   return (
     <div ref={ref}>
-      <div style={{ fontSize: 56, fontWeight: 700, color: theme.primary, letterSpacing: '-2px', lineHeight: 1 }}>
+      <div style={{ fontSize: 56, fontWeight: 700, color: theme.tangerine, letterSpacing: '-2px', lineHeight: 1 }}>
         {prefix}{count.toLocaleString()}{sfx}
       </div>
-      <p style={{ color: theme.textMuted, fontSize: 15, marginTop: 8, fontWeight: 400 }}>{label}</p>
+      <p style={{ color: '#CBD5E1', fontSize: 15, marginTop: 8, fontWeight: 400 }}>{label}</p>
     </div>
   );
 }
@@ -689,22 +712,22 @@ function useSectionParallax(range = 120) {
  
 function AboutSection() {
   return (
-    <section style={{ backgroundColor: theme.bgAlt, padding: '120px 24px', position: 'relative' }}>
+    <section style={{ backgroundColor: '#0F172A', padding: '120px 24px', position: 'relative' }}>
       <div style={{ maxWidth: 1440, margin: '0 auto' }}>
         <div className="about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 100, alignItems: 'start' }}>
           <div className="about-left">
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-              <div style={{ width: 12, height: 12, backgroundColor: theme.primary, borderRadius: 2 }} />
-              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '2px', color: theme.primary, textTransform: 'uppercase' }}>About Us</span>
+              <div style={{ width: 12, height: 12, backgroundColor: theme.tangerine, borderRadius: 2 }} />
+              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '2px', color: theme.tangerine, textTransform: 'uppercase' }}>About Us</span>
             </div>
-            <h2 className="about-h2" style={{ fontSize: 48, fontWeight: 700, color: theme.text, letterSpacing: '-1.5px', lineHeight: 1.1, marginBottom: 32 }}>About Nexros</h2>
-            <p style={{ fontSize: 15, color: theme.textMuted, lineHeight: 1.7, maxWidth: 300 }}>Pioneering intelligent solutions that reshape how humans and AI work together.</p>
+            <h2 className="about-h2" style={{ fontSize: 48, fontWeight: 700, color: '#FFFFFF', letterSpacing: '-1.5px', lineHeight: 1.1, marginBottom: 32 }}>About Nexros</h2>
+            <p style={{ fontSize: 15, color: '#CBD5E1', lineHeight: 1.7, maxWidth: 300 }}>Pioneering intelligent solutions that reshape how humans and AI work together.</p>
           </div>
           <div>
-            <Reveal as="p" style={{ fontSize: 21, color: theme.text, fontWeight: 600, lineHeight: 1.6, marginBottom: 32 }}>We help individuals and businesses harness the power of artificial intelligence to automate tasks, boost productivity, and drive growth — from custom AI chatbots to intelligent data analysis.</Reveal>
-            <Reveal as="p" delay={80} style={{ fontSize: 16, color: theme.textMuted, lineHeight: 1.8, marginBottom: 24 }}>At Nexros, we create smart platforms that integrate AI into every facet of your organization. Our goal is straightforward: to enable individuals and businesses to utilize advanced AI solutions with ease — enhancing decision-making, and achieving operational excellence.</Reveal>
-            <Reveal as="p" delay={160} style={{ fontSize: 16, color: theme.textMuted, lineHeight: 1.8, marginBottom: 72 }}>We believe that AI should enhance human skills rather than replace them. Our solutions connect robust AI technologies with the teams that utilize them, providing value, measurable outcomes, and ongoing growth.</Reveal>
-            <Reveal delay={100} className="about-stats" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 40, paddingTop: 48, borderTop: `1px solid ${theme.border}` }}>
+            <Reveal as="p" style={{ fontSize: 21, color: '#FFFFFF', fontWeight: 600, lineHeight: 1.6, marginBottom: 32 }}>We help individuals and businesses harness the power of artificial intelligence to automate tasks, boost productivity, and drive growth — from custom AI chatbots to intelligent data analysis.</Reveal>
+            <Reveal as="p" delay={80} style={{ fontSize: 16, color: '#CBD5E1', lineHeight: 1.8, marginBottom: 24 }}>At Nexros, we create smart platforms that integrate AI into every facet of your organization. Our goal is straightforward: to enable individuals and businesses to utilize advanced AI solutions with ease — enhancing decision-making, and achieving operational excellence.</Reveal>
+            <Reveal as="p" delay={160} style={{ fontSize: 16, color: '#CBD5E1', lineHeight: 1.8, marginBottom: 72 }}>We believe that AI should enhance human skills rather than replace them. Our solutions connect robust AI technologies with the teams that utilize them, providing value, measurable outcomes, and ongoing growth.</Reveal>
+            <Reveal delay={100} className="about-stats" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 40, paddingTop: 48, borderTop: `1px solid rgba(255,255,255,0.1)` }}>
               <StatItem value="20M+" label="Hours saved" />
               <StatItem value="$1B+" label="Saved for customers" />
               <StatItem value="10,000+" label="Nexros customers" />
@@ -820,42 +843,36 @@ function FooterCTA() {
   };
 
   return (
-    <section className="prefooter-section" style={{ position: 'relative', overflow: 'hidden', backgroundColor: '#2A2926', padding: '100px 24px' }}>
-      {/* ── Floating circle decorations (theme-matched, proper visible lite colors with CSS animation) ── */}
-      {/* Large light orange circle — top-left */}
-      <div className="float-circle-1" style={{ position: 'absolute', top: -60, left: -60, width: 220, height: 220, borderRadius: '50%', background: 'linear-gradient(135deg, rgba(244,121,28,0.25) 0%, rgba(251,196,139,0.1) 100%)', border: '1px solid rgba(251,196,139,0.25)', boxShadow: '0 8px 32px rgba(244,121,28,0.08)', pointerEvents: 'none' }} />
-      {/* Medium light peach circle — bottom-right */}
-      <div className="float-circle-2" style={{ position: 'absolute', bottom: -50, right: -50, width: 180, height: 180, borderRadius: '50%', background: 'linear-gradient(135deg, rgba(251,196,139,0.2) 0%, rgba(251,247,240,0.08) 100%)', border: '1px solid rgba(251,247,240,0.18)', boxShadow: '0 8px 24px rgba(251,196,139,0.06)', pointerEvents: 'none' }} />
-      {/* Small light cream circle — top-right mid */}
-      <div className="float-circle-3" style={{ position: 'absolute', top: 30, right: '28%', width: 100, height: 100, borderRadius: '50%', background: 'linear-gradient(135deg, rgba(251,247,240,0.18) 0%, rgba(243,235,221,0.05) 100%)', border: '1px solid rgba(251,247,240,0.15)', boxShadow: '0 6px 20px rgba(251,247,240,0.05)', pointerEvents: 'none' }} />
-      {/* Solid-ish peach accent circle — bottom-left mid */}
-      <div className="float-circle-4" style={{ position: 'absolute', bottom: 40, left: '20%', width: 56, height: 56, borderRadius: '50%', background: 'linear-gradient(135deg, rgba(251,196,139,0.3) 0%, rgba(244,121,28,0.15) 100%)', border: '1px solid rgba(251,196,139,0.2)', pointerEvents: 'none' }} />
-      {/* Solid-ish cream accent circle — top mid */}
-      <div className="float-circle-5" style={{ position: 'absolute', top: 25, left: '42%', width: 34, height: 34, borderRadius: '50%', background: 'linear-gradient(135deg, rgba(251,247,240,0.22) 0%, rgba(251,196,139,0.1) 100%)', border: '1px solid rgba(251,247,240,0.15)', pointerEvents: 'none' }} />
+    <section className="prefooter-section" style={{ position: 'relative', overflow: 'hidden', backgroundColor: '#EBEBF2', padding: '100px 24px' }}>
+      {/* ── Geometric mosaic decorations ── */}
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '25%', height: '100%', backgroundColor: 'rgba(15, 23, 42, 0.03)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', top: '40%', left: '15%', width: '20%', height: '60%', backgroundColor: 'rgba(15, 23, 42, 0.03)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', top: '0', right: '10%', width: '30%', height: '100%', backgroundColor: 'rgba(15, 23, 42, 0.02)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: '0', right: '0', width: '15%', height: '60%', backgroundColor: 'rgba(15, 23, 42, 0.04)', pointerEvents: 'none' }} />
 
       <Reveal className="prefooter-inner" style={{ position: 'relative', zIndex: 1, maxWidth: 1440, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 60, flexWrap: 'wrap' }}>
         <div style={{ flex: '1 1 280px' }}>
-          <h2 className="prefooter-h2" style={{ fontSize: 56, fontWeight: 800, color: '#FFFFFF', letterSpacing: '-2px', lineHeight: 1.08, marginBottom: 0 }}>
-            Start Now.<br />Get Started<br />For Free
+          <h2 className="prefooter-h2" style={{ fontSize: 52, fontWeight: 500, color: theme.text, letterSpacing: '-1.5px', lineHeight: 1.15, marginBottom: 0 }}>
+            Start Now. Get Started<br />For Free
           </h2>
         </div>
-        <div className="prefooter-right" style={{ flex: '1 1 360px', maxWidth: 480 }}>
-          <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: '2px', color: theme.primary, textTransform: 'uppercase', marginBottom: 20 }}>Subscribe to Our Newsletter!</p>
+        <div className="prefooter-right" style={{ flex: '1 1 400px', maxWidth: 520 }}>
+          <p style={{ fontSize: 16, fontWeight: 500, color: theme.text, marginBottom: 16 }}>Subscribe to Our Newsletter!</p>
           {submitted ? (
-            <div style={{ backgroundColor: 'rgba(244,121,28,0.12)', border: `1px solid rgba(244,121,28,0.3)`, borderRadius: 16, padding: '24px 28px', color: theme.peach, fontSize: 16, fontWeight: 600 }}>🎉 Thank you! You're on the list.</div>
+            <div style={{ backgroundColor: '#FFFFFF', border: `1px solid ${theme.border}`, borderRadius: 16, padding: '24px 28px', color: theme.primary, fontSize: 16, fontWeight: 600 }}>🎉 Thank you! You're on the list.</div>
           ) : (
-            <form onSubmit={handleSubmit} className="prefooter-form" style={{ display: 'flex', gap: 0, borderRadius: 14, overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.3)' }}>
+            <form onSubmit={handleSubmit} className="prefooter-form" style={{ display: 'flex', alignItems: 'center', gap: 8, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '8px 8px 8px 24px', boxShadow: '0 4px 20px rgba(15,23,42,0.05)' }}>
               <input
                 type="email" value={email} onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email Address" required
                 className="prefooter-input"
-                style={{ flex: 1, padding: '18px 24px', border: 'none', outline: 'none', fontSize: 15, color: theme.text, backgroundColor: '#FFFFFF', fontFamily: 'inherit', minHeight: 44 }}
+                style={{ flex: 1, border: 'none', outline: 'none', fontSize: 16, color: theme.text, backgroundColor: 'transparent', fontFamily: 'inherit', minHeight: 44 }}
               />
               <button
                 type="submit"
                 className="prefooter-btn"
-                style={{ padding: '18px 28px', backgroundColor: theme.text, color: '#FFFFFF', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 800, letterSpacing: '1px', whiteSpace: 'nowrap', transition: 'background 0.2s', minHeight: 44 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = theme.primary)}
+                style={{ padding: '16px 32px', backgroundColor: theme.text, color: '#FFFFFF', border: 'none', borderRadius: 10, cursor: 'pointer', fontSize: 13, fontWeight: 700, letterSpacing: '0.5px', whiteSpace: 'nowrap', transition: 'background 0.2s', minHeight: 44 }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = theme.primaryDark)}
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = theme.text)}
               >SUBSCRIBE</button>
             </form>
@@ -879,111 +896,50 @@ const investorsList = [
   { name: 'Vercel', icon: '▲' },
 ];
 
-function InvestorRow({ items }) {
-  const containerRef = useRef(null);
-  const trackRef = useRef(null);
-  const offsetRef = useRef(0);
-  const rafRef = useRef(null);
+function InvestorRow({ items, reverse = false }) {
   const doubled = [...items, ...items];
 
-  // Default idle speed (negative = RTL)
-  const DEFAULT_SPEED = -0.4;
-  const targetSpeedRef = useRef(DEFAULT_SPEED);
-  const smoothSpeedRef = useRef(DEFAULT_SPEED);
-  const isHoveredRef = useRef(false);
-
-  useEffect(() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const track = trackRef.current;
-    const container = containerRef.current;
-    if (!track || !container) return;
-
-    if (reduceMotion) return;
-
-    // Listen to mousemove event broadcast from section parent
-    const onInvestorMouseMove = (e) => {
-      isHoveredRef.current = true;
-      const deltaX = e.detail.deltaX;
-      // deltaX > 0 (moving right) -> positive target speed (LTR)
-      // deltaX < 0 (moving left) -> negative target speed (RTL)
-      targetSpeedRef.current = deltaX * 0.15; // Sensitivity scale
-    };
-
-    const onInvestorMouseLeave = () => {
-      isHoveredRef.current = false;
-    };
-
-    const onInvestorWheel = (e) => {
-      isHoveredRef.current = true;
-      // deltaY > 0 (scroll down) -> negative target speed (RTL)
-      // deltaY < 0 (scroll up) -> positive target speed (LTR)
-      targetSpeedRef.current = -e.detail.deltaY * 0.05;
-    };
-
-    container.addEventListener('investor-mousemove', onInvestorMouseMove);
-    container.addEventListener('investor-mouseleave', onInvestorMouseLeave);
-    container.addEventListener('investor-wheel', onInvestorWheel);
-
-    const loop = () => {
-      if (isHoveredRef.current) {
-        // Slowly decay back to the default RTL idle drift speed if mouse stops
-        targetSpeedRef.current += (DEFAULT_SPEED - targetSpeedRef.current) * 0.06;
-      } else {
-        targetSpeedRef.current = DEFAULT_SPEED;
-      }
-
-      // Smoothly interpolate current speed to target speed
-      smoothSpeedRef.current += (targetSpeedRef.current - smoothSpeedRef.current) * 0.08;
-
-      offsetRef.current += smoothSpeedRef.current;
-
-      const halfW = track.scrollWidth / 2;
-      if (halfW > 10) {
-        // Wrap translation limits to loop infinitely
-        if (offsetRef.current <= -halfW) offsetRef.current += halfW;
-        if (offsetRef.current >= 0) offsetRef.current -= halfW;
-      }
-
-      track.style.transform = `translateX(${offsetRef.current}px)`;
-      rafRef.current = requestAnimationFrame(loop);
-    };
-
-    rafRef.current = requestAnimationFrame(loop);
-
-    return () => {
-      cancelAnimationFrame(rafRef.current);
-      container.removeEventListener('investor-mousemove', onInvestorMouseMove);
-      container.removeEventListener('investor-mouseleave', onInvestorMouseLeave);
-      container.removeEventListener('investor-wheel', onInvestorWheel);
-    };
-  }, []);
-
   return (
-    <div
-      ref={containerRef}
-      data-investor-row
-      style={{ overflow: 'hidden', position: 'relative', marginBottom: 16 }}
-    >
+    <div style={{ overflow: 'hidden', position: 'relative', marginBottom: 24, display: 'flex' }}>
       <div
-        ref={trackRef}
-        style={{ display: 'flex', gap: 16, willChange: 'transform', alignItems: 'stretch' }}
+        className="animate-marquee"
+        style={{
+          display: 'flex',
+          gap: 24,
+          width: 'max-content',
+          animationDirection: reverse ? 'reverse' : 'normal',
+        }}
       >
         {doubled.map((inv, idx) => (
           <div
             key={idx}
             className="investor-card"
-            style={{ flexShrink: 0, width: 220, backgroundColor: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 20, padding: '36px 28px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, transition: 'box-shadow 0.25s, transform 0.25s', cursor: 'default' }}
+            style={{
+              flexShrink: 0,
+              backgroundColor: theme.surface,
+              border: `1px solid ${theme.border}`,
+              borderRadius: 20,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer',
+              filter: 'grayscale(100%)',
+              opacity: 0.6,
+            }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = '0 8px 28px rgba(42,41,38,0.08)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.filter = 'grayscale(0%)';
+              e.currentTarget.style.opacity = '1';
+              e.currentTarget.style.transform = 'scale(1.05)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = 'none';
-              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.filter = 'grayscale(100%)';
+              e.currentTarget.style.opacity = '0.6';
+              e.currentTarget.style.transform = 'scale(1)';
             }}
           >
-            <span style={{ fontSize: 20, color: theme.textMuted, fontWeight: 700 }}>{inv.icon}</span>
-            <span style={{ fontSize: 16, fontWeight: 600, color: theme.textMuted, letterSpacing: '-0.3px', whiteSpace: 'nowrap' }}>{inv.name}</span>
+            <span className="investor-icon" style={{ color: theme.textMuted, fontWeight: 700 }}>{inv.icon}</span>
+            <span className="investor-name" style={{ fontWeight: 600, color: theme.textMuted, letterSpacing: '-0.3px', whiteSpace: 'nowrap' }}>{inv.name}</span>
           </div>
         ))}
       </div>
@@ -992,56 +948,13 @@ function InvestorRow({ items }) {
 }
 
 function InvestorsSection() {
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-    const isTouch = window.matchMedia('(hover: none)').matches;
-    if (isTouch) return;
-
-    let lastX = null;
-
-    const onMouseMove = (e) => {
-      if (lastX !== null) {
-        const deltaX = e.clientX - lastX;
-        section.querySelectorAll('[data-investor-row]').forEach((el) => {
-          el.dispatchEvent(new CustomEvent('investor-mousemove', { detail: { deltaX } }));
-        });
-      }
-      lastX = e.clientX;
-    };
-
-    const onMouseLeave = () => {
-      lastX = null;
-      section.querySelectorAll('[data-investor-row]').forEach((el) => {
-        el.dispatchEvent(new CustomEvent('investor-mouseleave'));
-      });
-    };
-
-    const onWheel = (e) => {
-      section.querySelectorAll('[data-investor-row]').forEach((el) => {
-        el.dispatchEvent(new CustomEvent('investor-wheel', { detail: { deltaY: e.deltaY } }));
-      });
-    };
-
-    section.addEventListener('mousemove', onMouseMove, { passive: true });
-    section.addEventListener('mouseleave', onMouseLeave);
-    section.addEventListener('wheel', onWheel, { passive: true });
-
-    return () => {
-      section.removeEventListener('mousemove', onMouseMove);
-      section.removeEventListener('mouseleave', onMouseLeave);
-      section.removeEventListener('wheel', onWheel);
-    };
-  }, []);
-
-  const row1 = investorsList.slice(0, 5);
-  const row2 = investorsList.slice(3, 8);
-  const row3 = investorsList.slice(1, 6);
+  // Use more items per row to ensure seamless looping on wider screens
+  const row1 = [...investorsList.slice(0, 5), ...investorsList.slice(5, 7)];
+  const row2 = [...investorsList.slice(3, 8), ...investorsList.slice(0, 2)];
+  const row3 = [...investorsList.slice(1, 6), ...investorsList.slice(7, 9)];
 
   return (
-    <section ref={sectionRef} style={{ backgroundColor: theme.bgAlt, padding: '96px 0 96px' }}>
+    <section style={{ backgroundColor: theme.bgAlt, padding: '96px 0 96px', overflow: 'hidden' }}>
       <div className="investors-heading" style={{ maxWidth: 1440, margin: '0 auto', padding: '0 24px' }}>
         <Reveal style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
           <div style={{ width: 12, height: 12, backgroundColor: theme.primary, borderRadius: 2 }} />
@@ -1137,7 +1050,6 @@ export default function App() {
       <InvestorsSection />
       <FooterCTA />
       <Footer />
-      <ScrollProgress />
     </div>
   );
 }
