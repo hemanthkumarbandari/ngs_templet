@@ -38,14 +38,14 @@ function GlobalAnimationStyles() {
       }
 
       /* ── About sticky left column ── */
-      .about-left {
+      .about-left-col {
         position: sticky;
-        top: 100px;
+        top: 120px;
         align-self: start;
         height: fit-content;
       }
       @media (max-width: 768px) {
-        .about-left { position: static; }
+        .about-left-col { position: static !important; top: auto !important; }
       }
 
 
@@ -131,13 +131,14 @@ function GlobalAnimationStyles() {
         .about-section { padding: 80px 24px !important; }
       }
       @media (max-width: 767px) {
-        .about-left-col { position: relative !important; top: auto !important; }
+        .about-left-col { position: static !important; top: auto !important; }
       }
       @media (max-width: 480px) {
         .about-h2 { font-size: 28px !important; }
         .about-stats { grid-template-columns: 1fr !important; gap: 24px !important; }
         .stat-value { font-size: 36px !important; }
-        .about-section { padding: 64px 20px !important; overflow: hidden !important; }
+        /* NO overflow:hidden here — it would break sticky on wider mobiles */
+        .about-section { padding: 64px 20px !important; }
       }
 
       /* ── Mission section ── */
@@ -353,23 +354,51 @@ function ScrollProgress() {
  
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 function Navbar() {
+  const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
- 
+  const lastY = useRef(0);
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', onScroll);
+    const HERO_THRESHOLD = 80; // px — below this, never hide
+
+    const onScroll = () => {
+      const currentY = window.scrollY;
+      const scrollingDown = currentY > lastY.current;
+
+      setScrolled(currentY > 20);
+
+      if (currentY <= HERO_THRESHOLD) {
+        // Always visible at top of page
+        setHidden(false);
+      } else if (scrollingDown) {
+        // Scrolling down past hero → hide
+        setHidden(true);
+      } else {
+        // Scrolling up → show
+        setHidden(false);
+      }
+
+      lastY.current = currentY;
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
- 
+
   return (
     <nav
       style={{
-        position: 'sticky',
+        position: 'fixed',
         top: 0,
+        left: 0,
+        right: 0,
         zIndex: 50,
         backgroundColor: '#000000',
         padding: '0',
-        transition: 'all 0.3s ease',
+        /* Slide up on hide, slide down on show */
+        transform: hidden ? 'translateY(-100%)' : 'translateY(0)',
+        transition: 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+        willChange: 'transform',
       }}
     >
       <div
@@ -383,18 +412,17 @@ function Navbar() {
           alignItems: 'center',
           justifyContent: 'space-between',
           height: 64,
-          transition: 'all 0.3s ease',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <img 
+          <img
             className="nav-logo"
-            src={logoImg} 
-            alt="Nexros Logo" 
-            style={{ height: 48, width: 'auto', objectFit: 'contain' }} 
+            src={logoImg}
+            alt="Nexros Logo"
+            style={{ height: 48, width: 'auto', objectFit: 'contain' }}
           />
         </div>
- 
+
         <div style={{ display: 'flex', alignItems: 'center', gap: 32 }} className="nav-links">
           {['Home', 'Pages', 'Projects', 'Services', 'Blog'].map((item) => (
             <div
@@ -707,58 +735,117 @@ function StatItem({ value, label, suffix = '' }) {
   );
 }
  
-// Drifts the sticky heading upward as the user scrolls through the section
-function useSectionParallax(range = 120) {
-  const sectionRef = useRef(null);
-  const [offset, setOffset] = useState(0);
- 
-  useEffect(() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) return;
- 
-    let ticking = false;
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const el = sectionRef.current;
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          const total = rect.height - window.innerHeight;
-          const scrolled = -rect.top;
-          const progress = total > 0 ? Math.min(Math.max(scrolled / total, 0), 1) : 0;
-          setOffset(-progress * range);
-        }
-        ticking = false;
-      });
-    };
- 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [range]);
- 
-  return { sectionRef, offset };
-}
+// (useSectionParallax removed — sticky left column uses CSS position:sticky,
+// no JS parallax needed. See .about-left-col in GlobalAnimationStyles.)
  
 function AboutSection() {
   return (
-    <section className="about-section" style={{ backgroundColor: '#111827', padding: '120px 24px', position: 'relative' }}>
+    /*
+     * STICKY LEFT COLUMN — CSS position:sticky (no JS needed)
+     * Phase 1: Left col scrolls normally until top:120px from viewport top
+     * Phase 2: Left col locks in place while right col scrolls past (paragraphs → stats)
+     * Phase 3: When section bottom reaches sticky col bottom, it releases and scrolls away
+     * Mobile (<768px): sticky disabled, columns stack normally
+     */
+    <section
+      className="about-section"
+      style={{
+        backgroundColor: '#0D2830',
+        /* Generous vertical padding creates the scroll distance for sticky to be visible.
+           Top padding = section entry breathing room.
+           Bottom padding = keeps sticky alive until stats row passes the heading. */
+        padding: '140px 24px 160px',
+        position: 'relative',
+        /* NO overflow:hidden — would break position:sticky on children */
+      }}
+    >
       <div style={{ maxWidth: 1440, margin: '0 auto' }}>
-        <div className="about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 100, alignItems: 'start' }}>
-          <div className="about-left-col" style={{ position: 'sticky', top: 120, alignSelf: 'start', height: 'fit-content' }}>
+        <div
+          className="about-grid"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1.6fr',
+            gap: 100,
+            /* alignItems:start is REQUIRED for sticky to work — do not use 'center' or 'stretch' */
+            alignItems: 'start',
+          }}
+        >
+          {/* ── LEFT COLUMN — sticky via CSS class .about-left-col ── */}
+          <div className="about-left-col">
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-              <div style={{ width: 12, height: 12, backgroundColor: '#F97316', borderRadius: 2 }} />
-              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '2px', color: '#F97316', textTransform: 'uppercase' }}>About Us</span>
+              <div style={{ width: 12, height: 12, backgroundColor: theme.green, borderRadius: 2 }} />
+              <span style={{
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: '2px',
+                color: theme.green,
+                textTransform: 'uppercase',
+              }}>About Us</span>
             </div>
-            <h2 className="about-h2" style={{ fontSize: 48, fontWeight: 700, color: '#FFFFFF', letterSpacing: '-1.5px', lineHeight: 1.1, marginBottom: 32 }}>About NGS</h2>
-            <p style={{ fontSize: 15, color: '#9CA3AF', lineHeight: 1.7, maxWidth: 300 }}>Pioneering intelligent solutions that reshape how humans and AI work together.</p>
+            <h2
+              className="about-h2"
+              style={{
+                fontSize: 52,
+                fontWeight: 700,
+                color: '#FFFFFF',
+                letterSpacing: '-1.5px',
+                lineHeight: 1.1,
+                marginBottom: 28,
+              }}
+            >About NGS</h2>
           </div>
+
+          {/* ── RIGHT COLUMN — naturally taller → drives the sticky effect ── */}
           <div className="about-right-col">
-            <p style={{ fontSize: 21, color: '#FFFFFF', fontWeight: 600, lineHeight: 1.6, marginBottom: 32 }}>We help individuals and businesses harness the power of artificial intelligence to automate tasks, boost productivity, and drive growth — from custom AI chatbots to intelligent data analysis.</p>
-            <p style={{ fontSize: 16, color: '#9CA3AF', lineHeight: 1.8, marginBottom: 24 }}>At NGS, we create smart platforms that integrate AI into every facet of your organization. Our goal is straightforward: to enable individuals and businesses to utilize advanced AI solutions with ease — enhancing decision-making, and achieving operational excellence.</p>
-            <p style={{ fontSize: 16, color: '#9CA3AF', lineHeight: 1.8, marginBottom: 72 }}>We believe that AI should enhance human skills rather than replace them. Our solutions connect robust AI technologies with the teams that utilize them, providing value, measurable outcomes, and ongoing growth.</p>
-            <div className="about-stats" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 40, paddingTop: 48, borderTop: `1px solid rgba(255,255,255,0.1)` }}>
+            {/* Intro paragraph — larger type */}
+            <p style={{
+              fontSize: 21,
+              color: '#FFFFFF',
+              fontWeight: 600,
+              lineHeight: 1.65,
+              marginBottom: 48,
+            }}>
+              We help individuals and businesses harness the power of artificial intelligence
+              to automate tasks, boost productivity, and drive growth — from custom AI chatbots
+              to intelligent data analysis.
+            </p>
+
+            {/* Body paragraph 1 */}
+            <p style={{
+              fontSize: 16,
+              color: '#9CA3AF',
+              lineHeight: 1.85,
+              marginBottom: 32,
+            }}>
+              At NGS, we create smart platforms that integrate AI into every facet of your
+              organization. Our goal is straightforward: to enable individuals and businesses
+              to utilize advanced AI solutions with ease — enhancing decision-making, and
+              achieving operational excellence.
+            </p>
+
+            {/* Body paragraph 2 */}
+            <p style={{
+              fontSize: 16,
+              color: '#9CA3AF',
+              lineHeight: 1.85,
+              marginBottom: 80,
+            }}>
+              We believe that AI should enhance human skills rather than replace them. Our
+              solutions connect robust AI technologies with the teams that utilize them,
+              providing value, measurable outcomes, and ongoing growth.
+            </p>
+
+            {/* Stats row — scrolls into view while heading stays locked */}
+            <div
+              className="about-stats"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr 1fr',
+                gap: 40,
+                paddingTop: 52,
+                borderTop: '1px solid rgba(255,255,255,0.1)',
+              }}
+            >
               <StatItem value="20M+" label="Hours saved" />
               <StatItem value="$1B+" label="Saved for customers" />
               <StatItem value="10,000+" label="Customers" />
@@ -808,19 +895,19 @@ const values = [
     icon: ShieldCheck,
     title: 'Transparency & Trust',
     desc: 'We believe in open, honest about our AI capabilities and limitations. Our users deserve to understand how our technology works, what data we use, and how we protect their privacy.',
-    bg: '#FFFDE7',
+    bg: '#EFF6FF',   // soft blue-50
   },
   {
     icon: Award,
     title: 'Human-Centered Innovation',
     desc: 'Technology should serve humanity. We design our AI solutions with real human needs at the center, ensuring our innovations enhance human capabilities rather than replace human judgment.',
-    bg: theme.surface,
+    bg: '#FFFFFF',   // white
   },
   {
     icon: Database,
     title: 'Responsible AI Development',
     desc: "We're committed to developing AI that is safe, fair, and beneficial for all. This means rigorous testing, ethical guidelines in our development process, and ongoing monitoring of our systems' impact.",
-    bg: '#FFF9C4',
+    bg: '#EFF6FF',   // soft blue-50 (matching card 1)
   },
 ];
  
@@ -1024,7 +1111,7 @@ function Footer() {
       <div className="footer-grid" style={{ maxWidth: 1440, margin: '0 auto', padding: '72px 24px 48px', display: 'grid', gridTemplateColumns: '260px 1fr', gap: 80 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24 }}>
-            <img src={logoImg} alt="Logo" style={{ height: 44, width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <img src={logoImg} alt="Logo" style={{ height: 44, width: 'auto', objectFit: 'contain' }} />
           </div>
           <p style={{ color: '#C7D2FE', fontSize: 18, fontWeight: 700, lineHeight: 1.4, marginBottom: 24, maxWidth: 200 }}>AI Solutions That Deliver Real Business Results</p>
           <p style={{ color: '#94A3B8', fontSize: 13, lineHeight: 1.8, marginBottom: 6 }}>475 Cherry Dr, Troy, Michigan<br />48083 United States</p>
@@ -1086,8 +1173,9 @@ export default function App() {
   return (
     <div style={{ minHeight: '100vh', position: 'relative' }}>
       <GlobalAnimationStyles />
+      {/* Navbar is fixed — lives outside the content flow */}
+      <Navbar />
       <div style={{ position: 'relative', zIndex: 10, backgroundColor: theme.surface, marginBottom: footerHeight, boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
-        <Navbar />
         <HeroSection />
         <AboutSection />
         <MissionSection />
