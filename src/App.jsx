@@ -14,6 +14,7 @@ const theme = {
   textMuted: '#475569',    // cool muted slate-600
   border: '#E2E8F0',       // cool slate-200 divider
   surface: '#FFFFFF',      // pure white surface
+  green: '#22C55E',        // vibrant green matching logo
 };
  
 // ─── Global keyframes (marquee, fade/slide reveal) ────────────────────────────
@@ -89,9 +90,12 @@ function GlobalAnimationStyles() {
       @media (max-width: 1023px) {
         .nav-links { display: none !important; }
         .nav-auth  { gap: 8px !important; }
+        .nav-inner { padding: 0 32px !important; }
       }
       @media (max-width: 480px) {
-        .nav-auth button { padding: 10px 14px !important; font-size: 12px !important; }
+        .nav-inner { padding: 0 16px !important; height: 60px !important; }
+        .nav-logo { height: 32px !important; }
+        .nav-auth button { padding: 8px 14px !important; font-size: 12px !important; }
       }
 
       /* ── Hero section ── */
@@ -99,16 +103,22 @@ function GlobalAnimationStyles() {
         .hero-grid {
           grid-template-columns: 1fr !important;
           gap: 40px !important;
-          min-height: unset !important;
-          padding: 40px 20px 60px !important;
+          min-height: auto !important;
+          padding: 60px 24px 80px 24px !important;
         }
-        .hero-h1 { font-size: clamp(36px, 7vw, 56px) !important; }
+        .hero-h1 { font-size: 48px !important; }
         .hero-corner-circles { display: none !important; }
       }
+      @media (max-width: 767px) {
+        .hero-grid {
+          padding: 48px 20px 64px 20px !important;
+          gap: 32px !important;
+        }
+        .hero-h1 { font-size: 40px !important; letter-spacing: -1px !important; }
+        .hero-stat-cards { grid-template-columns: 1fr !important; gap: 16px !important; }
+      }
       @media (max-width: 480px) {
-        .hero-h1 { font-size: clamp(32px, 9vw, 44px) !important; letter-spacing: -1px !important; }
-        .hero-grid { padding: 28px 16px 48px !important; }
-        .hero-stat-cards { grid-template-columns: 1fr !important; }
+        .hero-h1 { font-size: 34px !important; }
       }
 
       /* ── About section ── */
@@ -118,11 +128,16 @@ function GlobalAnimationStyles() {
           gap: 48px !important;
         }
         .about-h2 { font-size: clamp(32px, 5vw, 44px) !important; }
+        .about-section { padding: 80px 24px !important; }
+      }
+      @media (max-width: 767px) {
+        .about-left-col { position: relative !important; top: auto !important; }
       }
       @media (max-width: 480px) {
-        .about-h2 { font-size: 30px !important; }
-        .about-stats { grid-template-columns: 1fr 1fr !important; gap: 24px !important; }
-        .stat-number { font-size: 40px !important; }
+        .about-h2 { font-size: 28px !important; }
+        .about-stats { grid-template-columns: 1fr !important; gap: 24px !important; }
+        .stat-value { font-size: 36px !important; }
+        .about-section { padding: 64px 20px !important; overflow: hidden !important; }
       }
 
       /* ── Mission section ── */
@@ -160,6 +175,7 @@ function GlobalAnimationStyles() {
       }
       @media (max-width: 480px) {
         .investor-card { width: 140px !important; }
+        .investors-h2 { font-size: 28px !important; }
       }
 
       /* ── Pre-footer CTA (Start Now / newsletter) ── */
@@ -173,11 +189,25 @@ function GlobalAnimationStyles() {
         .prefooter-right { max-width: 100% !important; width: 100% !important; }
       }
       @media (max-width: 480px) {
-        .prefooter-h2 { font-size: 34px !important; }
-        .prefooter-section { padding: 64px 16px !important; }
-        .prefooter-form { flex-direction: column !important; border-radius: 14px !important; overflow: visible !important; }
-        .prefooter-input { border-radius: 10px !important; }
-        .prefooter-btn { border-radius: 10px !important; padding: 16px 24px !important; min-height: 44px; }
+        .prefooter-inner { gap: 16px !important; }
+        .prefooter-h2 { font-size: 30px !important; }
+        .prefooter-section { padding: 40px 16px !important; }
+        .prefooter-form { 
+          flex-direction: column !important; 
+          border-radius: 16px !important; 
+          padding: 16px !important; 
+          gap: 16px !important; 
+        }
+        .prefooter-input { 
+          width: 100% !important; 
+          text-align: center !important; 
+          padding: 8px 0 !important; 
+        }
+        .prefooter-btn { 
+          width: 100% !important; 
+          border-radius: 12px !important; 
+          padding: 16px !important; 
+        }
       }
 
       /* ── Footer ── */
@@ -210,7 +240,7 @@ function GlobalAnimationStyles() {
 }
  
 // ─── Reveal-on-scroll wrapper ──────────────────────────────────────────────────
-function Reveal({ children, delay = 0, as: Tag = 'div', style = {} }) {
+function Reveal({ children, delay = 0, as: Tag = 'div', style = {}, className = '' }) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
  
@@ -233,7 +263,7 @@ function Reveal({ children, delay = 0, as: Tag = 'div', style = {} }) {
   return (
     <Tag
       ref={ref}
-      className={`reveal${visible ? ' reveal-visible' : ''}`}
+      className={`reveal${visible ? ' reveal-visible' : ''} ${className}`.trim()}
       style={{ transitionDelay: `${delay}ms`, ...style }}
     >
       {children}
@@ -337,30 +367,28 @@ function Navbar() {
         position: 'sticky',
         top: 0,
         zIndex: 50,
-        backgroundColor: 'transparent',
-        padding: '14px 16px 8px 16px',
+        backgroundColor: '#000000',
+        padding: '0',
         transition: 'all 0.3s ease',
       }}
     >
       <div
+        className="nav-inner"
         style={{
           maxWidth: 1440,
           margin: '0 auto',
-          backgroundColor: scrolled ? 'rgba(255,255,255,0.9)' : theme.surface,
-          backdropFilter: scrolled ? 'blur(12px)' : 'none',
-          border: `1px solid ${theme.border}`,
-          borderRadius: 16,
-          padding: '0 24px',
+          backgroundColor: '#000000',
+          padding: '0 64px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           height: 64,
-          boxShadow: scrolled ? '0 4px 20px rgba(42,41,38,0.06)' : '0 1px 4px rgba(42,41,38,0.03)',
           transition: 'all 0.3s ease',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <img 
+            className="nav-logo"
             src={logoImg} 
             alt="Nexros Logo" 
             style={{ height: 48, width: 'auto', objectFit: 'contain' }} 
@@ -371,9 +399,9 @@ function Navbar() {
           {['Home', 'Pages', 'Projects', 'Services', 'Blog'].map((item) => (
             <div
               key={item}
-              style={{ display: 'flex', alignItems: 'center', gap: 3, cursor: 'pointer', fontSize: 14, fontWeight: 500, color: theme.text, transition: 'color 0.2s', userSelect: 'none' }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = theme.primary)}
-              onMouseLeave={(e) => (e.currentTarget.style.color = theme.text)}
+              style={{ display: 'flex', alignItems: 'center', gap: 3, cursor: 'pointer', fontSize: 14, fontWeight: 500, color: '#FFFFFF', transition: 'color 0.2s', userSelect: 'none' }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#CCCCCC')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = '#FFFFFF')}
             >
               {item}
               <ChevronDown size={13} strokeWidth={2.5} />
@@ -384,7 +412,7 @@ function Navbar() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }} className="nav-auth">
           <button
             style={{
-              padding: '10px 24px', backgroundColor: theme.text, color: '#fff',
+              padding: '10px 24px', backgroundColor: '#FFFFFF', color: '#000000',
               borderRadius: 8, border: 'none', cursor: 'pointer',
               fontSize: 13, fontWeight: 700, letterSpacing: '0.6px', transition: 'opacity 0.2s',
             }}
@@ -413,34 +441,35 @@ function HeroSection() {
   });
  
   return (
-    <div style={{ backgroundColor: theme.surface }}>
+    <div style={{ backgroundColor: theme.surface, paddingBottom: 180 }}>
       <section
         className="hero-grid"
         style={{ 
           maxWidth: 1440, 
           margin: '0 auto', 
-          padding: '40px 24px', 
+          padding: '120px 64px 60px 64px', 
           display: 'grid', 
-          gridTemplateColumns: '1fr 1.15fr', 
-          gap: 64, 
-          alignItems: 'center',
-          minHeight: 'calc(100vh - 76px)',
+          gridTemplateColumns: '1fr 1.35fr', 
+          gap: 56, 
+          alignItems: 'start',
+          alignContent: 'center',
+          minHeight: '75vh',
           boxSizing: 'border-box',
           position: 'relative',
           overflow: 'hidden',
         }}
       >
 
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <h1 className="hero-h1" style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.08, color: theme.text, marginBottom: 24, letterSpacing: '-2px', ...fadeStep(0) }}>
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: 580 }}>
+          <h1 className="hero-h1" style={{ fontSize: 64, fontWeight: 700, lineHeight: 1.1, color: theme.text, marginBottom: 24, letterSpacing: '-2px', ...fadeStep(0) }}>
             Why We Build<br />Different
           </h1>
-          <p style={{ fontSize: 17, color: theme.textMuted, lineHeight: 1.7, marginBottom: 36, maxWidth: 480, fontWeight: 400, ...fadeStep(120) }}>
+          <p style={{ fontSize: 17, color: theme.textMuted, lineHeight: 1.7, marginBottom: 32, maxWidth: 540, fontWeight: 400, ...fadeStep(120) }}>
             We believe that every business deserves a website that works as hard as they do. That's why we've made it our mission to make advanced AI technology accessible, practical, and profitable for our clients.
           </p>
           <div style={fadeStep(240)}>
             <button
-              style={{ padding: '14px 28px', backgroundColor: theme.primary, color: '#fff', borderRadius: 12, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700, letterSpacing: '1px', transition: 'all 0.2s', boxShadow: '0 4px 20px rgba(244,121,28,0.28)', minHeight: 44 }}
+              style={{ padding: '14px 28px', backgroundColor: theme.primary, color: '#fff', borderRadius: 12, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700, letterSpacing: '1px', transition: 'all 0.2s', boxShadow: '0 4px 20px rgba(37,99,235,0.25)', minHeight: 44 }}
               onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = theme.primaryDark; e.currentTarget.style.transform = 'translateY(-1px)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = theme.primary; e.currentTarget.style.transform = 'translateY(0)'; }}
             >
@@ -449,19 +478,19 @@ function HeroSection() {
           </div>
         </div>
 
-        <div style={{ position: 'relative', zIndex: 1, ...fadeStep(180) }}>
-          <div style={{ borderRadius: 36, overflow: 'hidden', height: 320, marginBottom: 20, boxShadow: '0 8px 40px rgba(42,41,38,0.1)' }}>
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', ...fadeStep(180) }}>
+          <div style={{ borderRadius: 36, overflow: 'hidden', height: 360, marginBottom: 20, boxShadow: '0 8px 40px rgba(42,41,38,0.1)' }}>
             <img src="/hero_team.png" alt="Team collaborating" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
-          <div className="hero-stat-cards" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-            <div style={{ backgroundColor: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 28, padding: '28px 28px', display: 'flex', alignItems: 'center', ...fadeStep(300) }}>
-              <p style={{ color: theme.text, fontWeight: 500, fontSize: 18, lineHeight: 1.45 }}>
+          <div className="hero-stat-cards" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+            <div style={{ backgroundColor: '#EAEFF6', borderRadius: 24, padding: '24px', display: 'flex', alignItems: 'center', ...fadeStep(300) }}>
+              <p style={{ color: '#1E2B58', fontWeight: 500, fontSize: 16, lineHeight: 1.45 }}>
                 "The AI platform revealed insights we never knew existed in our data."
               </p>
             </div>
-            <div style={{ backgroundColor: theme.peach, borderRadius: 28, padding: '28px 28px', display: 'flex', flexDirection: 'column', justifyContent: 'center', ...fadeStep(380) }}>
-              <span style={{ fontSize: 60, fontWeight: 700, color: theme.primaryDark, lineHeight: 1, letterSpacing: '-2px' }}>36%</span>
-              <p style={{ color: theme.text, fontWeight: 500, fontSize: 18, marginTop: 8 }}>Connection rate</p>
+            <div style={{ backgroundColor: '#E1EFEA', borderRadius: 24, padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'center', ...fadeStep(380) }}>
+              <span style={{ fontSize: 48, fontWeight: 700, color: '#115E59', lineHeight: 1, letterSpacing: '-1.5px' }}>36%</span>
+              <p style={{ color: '#115E59', fontWeight: 500, fontSize: 16, marginTop: 8 }}>Connection rate</p>
             </div>
           </div>
         </div>
@@ -542,13 +571,13 @@ function LogoMarquee() {
   const trackRef   = useRef(null);
   const offsetRef  = useRef(0);
   const rafRef     = useRef(null);
+  const initializedRef = useRef(false);
 
   // Target speed driven by cursor; smoothed speed used in the loop
-  const targetSpeedRef  = useRef(-0.6);   // negative = RTL (default)
-  const smoothSpeedRef  = useRef(-0.6);
+  const targetSpeedRef  = useRef(-0.8);   // negative = RTL (default)
+  const smoothSpeedRef  = useRef(-0.8);
   const isHoveringRef   = useRef(false);
-  const DEFAULT_SPEED   = -0.6;           // px/frame RTL
-  const MAX_SPEED       = 2.0;            // magnitude at edges
+  const MAX_SPEED       = 1.5;            // magnitude at edges
 
   useEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -565,35 +594,36 @@ function LogoMarquee() {
       const norm  = Math.min(Math.max(relX / rect.width, 0), 1); // 0–1
 
       // norm 0 → full RTL (−MAX_SPEED), 0.5 → 0, 1 → full LTR (+MAX_SPEED)
-      // We bias the idle side slightly so center still drifts a little RTL
-      const bias = -0.15; // slight leftward bias at dead-center
-      targetSpeedRef.current = (norm - 0.5) * MAX_SPEED * 2 + bias;
+      targetSpeedRef.current = (norm - 0.5) * MAX_SPEED * 2;
       isHoveringRef.current  = true;
     };
 
     const onMouseLeave = () => {
       isHoveringRef.current  = false;
-      targetSpeedRef.current = DEFAULT_SPEED; // ease back to default RTL
+      // We do not reset the target speed here, so it continues in the last direction!
     };
 
-    section.addEventListener('mousemove', onMouseLeave); // reset on enter to section
     section.addEventListener('mousemove', onMouseMove, { passive: true });
     section.addEventListener('mouseleave', onMouseLeave);
 
     // ── RAF loop ──────────────────────────────────────────────────────────────
     const timer = setTimeout(() => {
       const loop = () => {
-        // Low-pass filter: smooth speed toward target (0.08 = slow ease, feels premium)
-        const lerpFactor = isHoveringRef.current ? 0.06 : 0.04;
+        // Low-pass filter: smooth speed toward target
+        const lerpFactor = isHoveringRef.current ? 0.05 : 0.02;
         smoothSpeedRef.current += (targetSpeedRef.current - smoothSpeedRef.current) * lerpFactor;
 
         offsetRef.current += smoothSpeedRef.current;
 
-        const halfW = track.scrollWidth / 2;
-        if (halfW > 10) {
+        const loopWidth = track.children[0]?.offsetWidth || 0;
+        if (loopWidth > 10) {
+          if (!initializedRef.current) {
+             offsetRef.current = -loopWidth;
+             initializedRef.current = true;
+          }
           // Seamless loop in both directions
-          if (offsetRef.current <= -halfW) offsetRef.current += halfW;
-          if (offsetRef.current >= halfW)  offsetRef.current -= halfW;
+          if (offsetRef.current <= -loopWidth * 2) offsetRef.current += loopWidth;
+          if (offsetRef.current >= 0)  offsetRef.current -= loopWidth;
         }
 
         track.style.transform = `translateX(${offsetRef.current}px)`;
@@ -610,18 +640,19 @@ function LogoMarquee() {
     };
   }, []);
 
-  const doubled = [...logos, ...logos];
-
   return (
     <section
       ref={sectionRef}
       className="marquee-section"
-      style={{ backgroundColor: theme.surface, padding: '36px 0', overflow: 'hidden', cursor: 'none' }}
+      style={{ backgroundColor: theme.surface, padding: '36px 0', overflow: 'hidden' }}
     >
-      {/* Marquee strip */}
-      <div style={{ overflow: 'hidden', position: 'relative' }}>
-        <div ref={trackRef} style={{ display: 'flex', gap: 72, whiteSpace: 'nowrap', willChange: 'transform', alignItems: 'center' }}>
-          {doubled.map((logo, idx) => (<FlipItem key={idx} name={logo.name} icon={logo.icon} />))}
+      <div style={{ width: '100%', overflow: 'hidden' }}>
+        <div ref={trackRef} style={{ display: 'flex', width: 'max-content', willChange: 'transform' }}>
+          {[1, 2, 3].map(i => (
+            <div key={i} style={{ display: 'flex', gap: 72, paddingRight: 72, whiteSpace: 'nowrap', alignItems: 'center' }}>
+              {logos.map((logo, idx) => (<FlipItem key={idx} name={logo.name} icon={logo.icon} />))}
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -668,10 +699,10 @@ function StatItem({ value, label, suffix = '' }) {
  
   return (
     <div ref={ref}>
-      <div style={{ fontSize: 56, fontWeight: 700, color: theme.tangerine, letterSpacing: '-2px', lineHeight: 1 }}>
+      <div className="stat-value" style={{ fontSize: 56, fontWeight: 700, color: theme.tangerine, letterSpacing: '-2px', lineHeight: 1 }}>
         {prefix}{count.toLocaleString()}{sfx}
       </div>
-      <p style={{ color: '#CBD5E1', fontSize: 15, marginTop: 8, fontWeight: 400 }}>{label}</p>
+      <p className="stat-label" style={{ color: '#CBD5E1', fontSize: 15, marginTop: 8, fontWeight: 400 }}>{label}</p>
     </div>
   );
 }
@@ -712,26 +743,26 @@ function useSectionParallax(range = 120) {
  
 function AboutSection() {
   return (
-    <section style={{ backgroundColor: '#0F172A', padding: '120px 24px', position: 'relative' }}>
+    <section className="about-section" style={{ backgroundColor: '#111827', padding: '120px 24px', position: 'relative' }}>
       <div style={{ maxWidth: 1440, margin: '0 auto' }}>
         <div className="about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 100, alignItems: 'start' }}>
-          <div className="about-left">
+          <div className="about-left-col" style={{ position: 'sticky', top: 120, alignSelf: 'start', height: 'fit-content' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-              <div style={{ width: 12, height: 12, backgroundColor: theme.tangerine, borderRadius: 2 }} />
-              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '2px', color: theme.tangerine, textTransform: 'uppercase' }}>About Us</span>
+              <div style={{ width: 12, height: 12, backgroundColor: '#F97316', borderRadius: 2 }} />
+              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '2px', color: '#F97316', textTransform: 'uppercase' }}>About Us</span>
             </div>
-            <h2 className="about-h2" style={{ fontSize: 48, fontWeight: 700, color: '#FFFFFF', letterSpacing: '-1.5px', lineHeight: 1.1, marginBottom: 32 }}>About Nexros</h2>
-            <p style={{ fontSize: 15, color: '#CBD5E1', lineHeight: 1.7, maxWidth: 300 }}>Pioneering intelligent solutions that reshape how humans and AI work together.</p>
+            <h2 className="about-h2" style={{ fontSize: 48, fontWeight: 700, color: '#FFFFFF', letterSpacing: '-1.5px', lineHeight: 1.1, marginBottom: 32 }}>About NGS</h2>
+            <p style={{ fontSize: 15, color: '#9CA3AF', lineHeight: 1.7, maxWidth: 300 }}>Pioneering intelligent solutions that reshape how humans and AI work together.</p>
           </div>
-          <div>
-            <Reveal as="p" style={{ fontSize: 21, color: '#FFFFFF', fontWeight: 600, lineHeight: 1.6, marginBottom: 32 }}>We help individuals and businesses harness the power of artificial intelligence to automate tasks, boost productivity, and drive growth — from custom AI chatbots to intelligent data analysis.</Reveal>
-            <Reveal as="p" delay={80} style={{ fontSize: 16, color: '#CBD5E1', lineHeight: 1.8, marginBottom: 24 }}>At Nexros, we create smart platforms that integrate AI into every facet of your organization. Our goal is straightforward: to enable individuals and businesses to utilize advanced AI solutions with ease — enhancing decision-making, and achieving operational excellence.</Reveal>
-            <Reveal as="p" delay={160} style={{ fontSize: 16, color: '#CBD5E1', lineHeight: 1.8, marginBottom: 72 }}>We believe that AI should enhance human skills rather than replace them. Our solutions connect robust AI technologies with the teams that utilize them, providing value, measurable outcomes, and ongoing growth.</Reveal>
-            <Reveal delay={100} className="about-stats" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 40, paddingTop: 48, borderTop: `1px solid rgba(255,255,255,0.1)` }}>
+          <div className="about-right-col">
+            <p style={{ fontSize: 21, color: '#FFFFFF', fontWeight: 600, lineHeight: 1.6, marginBottom: 32 }}>We help individuals and businesses harness the power of artificial intelligence to automate tasks, boost productivity, and drive growth — from custom AI chatbots to intelligent data analysis.</p>
+            <p style={{ fontSize: 16, color: '#9CA3AF', lineHeight: 1.8, marginBottom: 24 }}>At NGS, we create smart platforms that integrate AI into every facet of your organization. Our goal is straightforward: to enable individuals and businesses to utilize advanced AI solutions with ease — enhancing decision-making, and achieving operational excellence.</p>
+            <p style={{ fontSize: 16, color: '#9CA3AF', lineHeight: 1.8, marginBottom: 72 }}>We believe that AI should enhance human skills rather than replace them. Our solutions connect robust AI technologies with the teams that utilize them, providing value, measurable outcomes, and ongoing growth.</p>
+            <div className="about-stats" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 40, paddingTop: 48, borderTop: `1px solid rgba(255,255,255,0.1)` }}>
               <StatItem value="20M+" label="Hours saved" />
               <StatItem value="$1B+" label="Saved for customers" />
-              <StatItem value="10,000+" label="Nexros customers" />
-            </Reveal>
+              <StatItem value="10,000+" label="Customers" />
+            </div>
           </div>
         </div>
       </div>
@@ -745,10 +776,10 @@ function MissionSection() {
     <section className="mission-section" style={{ backgroundColor: theme.surface, padding: '100px 24px 80px' }}>
       <div style={{ maxWidth: 1440, margin: '0 auto' }}>
         <Reveal style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
-          <div style={{ width: 12, height: 12, backgroundColor: theme.primary, borderRadius: 2 }} />
-          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '2px', color: theme.primary, textTransform: 'uppercase' }}>Our Mission</span>
+          <div style={{ width: 12, height: 12, backgroundColor: theme.green, borderRadius: 2 }} />
+          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '2px', color: theme.green, textTransform: 'uppercase' }}>Our Mission</span>
         </Reveal>
-        <Reveal as="h2" delay={80} className="mission-h2" style={{ fontSize: 60, fontWeight: 700, color: theme.text, letterSpacing: '-2px', lineHeight: 1.1, marginBottom: 48, maxWidth: 820 }}>
+        <Reveal as="h2" delay={80} className="mission-h2" style={{ fontSize: 60, fontWeight: 700, color: theme.text, letterSpacing: '-2px', lineHeight: 1.1, marginBottom: 48, maxWidth: 1000 }}>
           Where AI Meets Action. The Team Turning Ideas Into Agents.
         </Reveal>
         <Reveal delay={160} className="mission-img" style={{ borderRadius: 32, overflow: 'hidden', width: '100%', height: 380, boxShadow: '0 20px 60px rgba(42,41,38,0.1)' }}>
@@ -760,9 +791,9 @@ function MissionSection() {
           </p>
           <div style={{ flexShrink: 0 }}>
             <button
-              style={{ padding: '14px 32px', backgroundColor: theme.text, color: '#fff', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700, letterSpacing: '0.8px', transition: 'opacity 0.2s, transform 0.2s', minHeight: 44 }}
-              onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }}
+              style={{ padding: '14px 32px', backgroundColor: theme.primary, color: '#fff', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700, letterSpacing: '0.8px', transition: 'all 0.2s', minHeight: 44 }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = theme.primaryDark; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = theme.primary; e.currentTarget.style.transform = 'translateY(0)'; }}
             >GET STARTED</button>
           </div>
         </Reveal>
@@ -777,7 +808,7 @@ const values = [
     icon: ShieldCheck,
     title: 'Transparency & Trust',
     desc: 'We believe in open, honest about our AI capabilities and limitations. Our users deserve to understand how our technology works, what data we use, and how we protect their privacy.',
-    bg: '#FFF3E6',
+    bg: '#FFFDE7',
   },
   {
     icon: Award,
@@ -789,7 +820,7 @@ const values = [
     icon: Database,
     title: 'Responsible AI Development',
     desc: "We're committed to developing AI that is safe, fair, and beneficial for all. This means rigorous testing, ethical guidelines in our development process, and ongoing monitoring of our systems' impact.",
-    bg: '#FDEBD9',
+    bg: '#FFF9C4',
   },
 ];
  
@@ -871,9 +902,9 @@ function FooterCTA() {
               <button
                 type="submit"
                 className="prefooter-btn"
-                style={{ padding: '16px 32px', backgroundColor: theme.text, color: '#FFFFFF', border: 'none', borderRadius: 10, cursor: 'pointer', fontSize: 13, fontWeight: 700, letterSpacing: '0.5px', whiteSpace: 'nowrap', transition: 'background 0.2s', minHeight: 44 }}
+                style={{ padding: '16px 32px', backgroundColor: theme.primary, color: '#FFFFFF', border: 'none', borderRadius: 10, cursor: 'pointer', fontSize: 13, fontWeight: 700, letterSpacing: '0.5px', whiteSpace: 'nowrap', transition: 'background 0.2s', minHeight: 44 }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = theme.primaryDark)}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = theme.text)}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = theme.primary)}
               >SUBSCRIBE</button>
             </form>
           )}
@@ -957,8 +988,8 @@ function InvestorsSection() {
     <section style={{ backgroundColor: theme.bgAlt, padding: '96px 0 96px', overflow: 'hidden' }}>
       <div className="investors-heading" style={{ maxWidth: 1440, margin: '0 auto', padding: '0 24px' }}>
         <Reveal style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-          <div style={{ width: 12, height: 12, backgroundColor: theme.primary, borderRadius: 2 }} />
-          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '2px', color: theme.primary, textTransform: 'uppercase' }}>Our Investors</span>
+          <div style={{ width: 12, height: 12, backgroundColor: theme.green, borderRadius: 2 }} />
+          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '2px', color: theme.green, textTransform: 'uppercase' }}>Our Investors</span>
         </Reveal>
         <Reveal as="h2" delay={80} className="investors-h2" style={{ fontSize: 52, fontWeight: 700, color: theme.text, letterSpacing: '-1.5px', lineHeight: 1.1, marginBottom: 48 }}>Backed By The Best</Reveal>
       </div>
@@ -980,7 +1011,7 @@ const footerLinks = [
 function Footer() {
   const linkStyle = {
     display: 'block',
-    color: theme.textMuted,
+    color: '#94A3B8',
     fontSize: 14,
     marginBottom: 12,
     cursor: 'pointer',
@@ -989,20 +1020,20 @@ function Footer() {
   };
  
   return (
-    <footer style={{ backgroundColor: theme.bg, borderTop: `1px solid ${theme.border}` }}>
+    <footer style={{ background: 'linear-gradient(135deg, #102128 0%, #15323C 100%)', borderTop: 'none' }}>
       <div className="footer-grid" style={{ maxWidth: 1440, margin: '0 auto', padding: '72px 24px 48px', display: 'grid', gridTemplateColumns: '260px 1fr', gap: 80 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24 }}>
-            <img src={logoImg} alt="Logo" style={{ height: 44, width: 'auto', objectFit: 'contain' }} />
+            <img src={logoImg} alt="Logo" style={{ height: 44, width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
           </div>
-          <p style={{ color: theme.text, fontSize: 18, fontWeight: 700, lineHeight: 1.4, marginBottom: 24, maxWidth: 200 }}>AI Solutions That Deliver Real Business Results</p>
-          <p style={{ color: theme.textMuted, fontSize: 13, lineHeight: 1.8, marginBottom: 6 }}>475 Cherry Dr, Troy, Michigan<br />48083 United States</p>
-          <p style={{ color: theme.textMuted, fontSize: 13, marginBottom: 28 }}>(248) 823-3200</p>
-          <div style={{ display: 'flex', gap: 12 }}>
-            {['f', 'in', 'X'].map((social) => (
-              <div key={social} style={{ width: 36, height: 36, borderRadius: 8, border: `1px solid ${theme.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.textMuted, fontSize: 12, fontWeight: 700, cursor: 'pointer', transition: 'border-color 0.2s, color 0.2s' }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = theme.primary; e.currentTarget.style.color = theme.primary; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = theme.border; e.currentTarget.style.color = theme.textMuted; }}
+          <p style={{ color: '#C7D2FE', fontSize: 18, fontWeight: 700, lineHeight: 1.4, marginBottom: 24, maxWidth: 200 }}>AI Solutions That Deliver Real Business Results</p>
+          <p style={{ color: '#94A3B8', fontSize: 13, lineHeight: 1.8, marginBottom: 6 }}>475 Cherry Dr, Troy, Michigan<br />48083 United States</p>
+          <p style={{ color: '#94A3B8', fontSize: 13, marginBottom: 28 }}>(248) 823-3200</p>
+          <div style={{ display: 'flex', gap: 16 }}>
+            {['𝕏', 'in', 'ig'].map((social) => (
+              <div key={social} style={{ color: '#94A3B8', fontSize: 16, fontWeight: 600, cursor: 'pointer', transition: 'color 0.2s' }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#FFFFFF')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = '#94A3B8')}
               >{social}</div>
             ))}
           </div>
@@ -1010,24 +1041,24 @@ function Footer() {
         <div className="footer-links-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr) 1.2fr', gap: 32 }}>
           {footerLinks.map((col) => (
             <div key={col.title}>
-              <p style={{ color: theme.text, fontSize: 12, fontWeight: 700, letterSpacing: '1.5px', marginBottom: 20 }}>{col.title}</p>
+              <p style={{ color: '#FFFFFF', fontSize: 12, fontWeight: 700, letterSpacing: '1px', marginBottom: 20 }}>{col.title}</p>
               {col.links.map((link) => (
-                <a key={link} href="#" style={linkStyle} onMouseEnter={(e) => (e.currentTarget.style.color = theme.primary)} onMouseLeave={(e) => (e.currentTarget.style.color = theme.textMuted)}>{link}</a>
+                <a key={link} href="#" style={linkStyle} onMouseEnter={(e) => (e.currentTarget.style.color = '#FFFFFF')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94A3B8')}>{link}</a>
               ))}
             </div>
           ))}
           <div>
-            <p style={{ color: theme.text, fontSize: 12, fontWeight: 700, letterSpacing: '1.5px', marginBottom: 20 }}>GET IN TOUCH</p>
-            <a href="mailto:hello@company.com" style={{ ...linkStyle, color: theme.textMuted }} onMouseEnter={(e) => (e.currentTarget.style.color = theme.primary)} onMouseLeave={(e) => (e.currentTarget.style.color = theme.textMuted)}>hello@company.com</a>
+            <p style={{ color: '#FFFFFF', fontSize: 12, fontWeight: 700, letterSpacing: '1px', marginBottom: 20 }}>GET IN TOUCH</p>
+            <a href="mailto:hello@company.com" style={{ ...linkStyle, color: '#94A3B8' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#FFFFFF')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94A3B8')}>hello@company.com</a>
           </div>
         </div>
       </div>
-      <div style={{ borderTop: `1px solid ${theme.border}`, padding: '20px 24px' }}>
+      <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '24px 24px' }}>
         <div className="footer-bottom" style={{ maxWidth: 1440, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <p style={{ color: theme.textMuted, fontSize: 13 }}>©Copyright 2025, All Rights Reserved</p>
+          <p style={{ color: '#94A3B8', fontSize: 13 }}>©Copyright 2025, All Rights Reserved</p>
           <div className="footer-bottom-links" style={{ display: 'flex', gap: 32 }}>
             {['Terms and conditions', 'Privacy Policy'].map((item) => (
-              <a key={item} href="#" style={{ color: theme.textMuted, fontSize: 13, textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = theme.primary)} onMouseLeave={(e) => (e.currentTarget.style.color = theme.textMuted)}>{item}</a>
+              <a key={item} href="#" style={{ color: '#94A3B8', fontSize: 13, textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.color = '#FFFFFF')} onMouseLeave={(e) => (e.currentTarget.style.color = '#94A3B8')}>{item}</a>
             ))}
           </div>
         </div>
@@ -1038,18 +1069,36 @@ function Footer() {
  
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
+  const [footerHeight, setFooterHeight] = useState(0);
+  const footerRef = useRef(null);
+
+  useEffect(() => {
+    if (!footerRef.current) return;
+    const observer = new ResizeObserver(() => {
+      if (footerRef.current) {
+        setFooterHeight(footerRef.current.offsetHeight);
+      }
+    });
+    observer.observe(footerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div style={{ minHeight: '100vh', overflowX: 'clip' }}>
+    <div style={{ minHeight: '100vh', position: 'relative' }}>
       <GlobalAnimationStyles />
-      <Navbar />
-      <HeroSection />
-      <AboutSection />
-      <MissionSection />
-      <LogoMarquee />
-      <ValuesSection />
-      <InvestorsSection />
-      <FooterCTA />
-      <Footer />
+      <div style={{ position: 'relative', zIndex: 10, backgroundColor: theme.surface, marginBottom: footerHeight, boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
+        <Navbar />
+        <HeroSection />
+        <AboutSection />
+        <MissionSection />
+        <LogoMarquee />
+        <ValuesSection />
+        <InvestorsSection />
+        <FooterCTA />
+      </div>
+      <div ref={footerRef} style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }}>
+        <Footer />
+      </div>
     </div>
   );
 }
