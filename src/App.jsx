@@ -37,6 +37,23 @@ function GlobalAnimationStyles() {
         transform: translateY(0);
       }
 
+      /* ── Mobile: disable all scroll/fade animations ── */
+      @media (max-width: 768px) {
+        .reveal,
+        .reveal.reveal-visible {
+          opacity: 1 !important;
+          transform: none !important;
+          transition: none !important;
+          animation: none !important;
+        }
+        /* Also kill hero fade-up animation on mobile */
+        [style*="heroFadeUp"] {
+          animation: none !important;
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      }
+
       /* ── About sticky left column ── */
       .about-left-col {
         position: sticky;
@@ -104,14 +121,16 @@ function GlobalAnimationStyles() {
           grid-template-columns: 1fr !important;
           gap: 40px !important;
           min-height: auto !important;
-          padding: 60px 24px 80px 24px !important;
+          /* top padding accounts for fixed navbar (64px) + breathing room */
+          padding: 100px 24px 80px 24px !important;
         }
         .hero-h1 { font-size: 48px !important; }
         .hero-corner-circles { display: none !important; }
       }
       @media (max-width: 767px) {
         .hero-grid {
-          padding: 48px 20px 64px 20px !important;
+          /* 80px = 64px navbar + 16px gap */
+          padding: 80px 20px 56px 20px !important;
           gap: 32px !important;
         }
         .hero-h1 { font-size: 40px !important; letter-spacing: -1px !important; }
@@ -183,31 +202,37 @@ function GlobalAnimationStyles() {
       @media (max-width: 1023px) {
         .prefooter-inner {
           flex-direction: column !important;
-          gap: 40px !important;
+          gap: 32px !important;
           align-items: flex-start !important;
         }
-        .prefooter-h2 { font-size: clamp(36px, 7vw, 52px) !important; }
-        .prefooter-right { max-width: 100% !important; width: 100% !important; }
+        .prefooter-h2 { font-size: clamp(32px, 6vw, 48px) !important; }
+        .prefooter-right { max-width: 100% !important; width: 100% !important; flex: none !important; }
+        .prefooter-section { padding: 56px 24px !important; }
+      }
+      @media (max-width: 767px) {
+        .prefooter-inner { gap: 24px !important; }
+        .prefooter-h2 { font-size: 28px !important; letter-spacing: -0.5px !important; }
+        .prefooter-section { padding: 48px 20px !important; }
       }
       @media (max-width: 480px) {
-        .prefooter-inner { gap: 16px !important; }
-        .prefooter-h2 { font-size: 30px !important; }
+        .prefooter-inner { gap: 20px !important; }
+        .prefooter-h2 { font-size: 26px !important; }
         .prefooter-section { padding: 40px 16px !important; }
-        .prefooter-form { 
-          flex-direction: column !important; 
-          border-radius: 16px !important; 
-          padding: 16px !important; 
-          gap: 16px !important; 
+        .prefooter-form {
+          flex-direction: column !important;
+          border-radius: 16px !important;
+          padding: 16px !important;
+          gap: 12px !important;
         }
-        .prefooter-input { 
-          width: 100% !important; 
-          text-align: center !important; 
-          padding: 8px 0 !important; 
+        .prefooter-input {
+          width: 100% !important;
+          text-align: center !important;
+          padding: 8px 0 !important;
         }
-        .prefooter-btn { 
-          width: 100% !important; 
-          border-radius: 12px !important; 
-          padding: 16px !important; 
+        .prefooter-btn {
+          width: 100% !important;
+          border-radius: 12px !important;
+          padding: 16px !important;
         }
       }
 
