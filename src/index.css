@@ -96,3 +96,28 @@ h1, h2, h3, h4, h5, h6, p, span, div {
     font-size: 24px !important;
   }
 }
+
+.hero-grid {
+  padding: 180px 64px 60px 64px;
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 56px;
+  align-items: start;
+  align-content: center;
+  min-height: 75vh;
+}
+
+@media (max-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    padding: 160px 40px 60px 40px;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-grid {
+    padding: 140px 24px 40px 24px;
+    gap: 32px;
+  }
+}
